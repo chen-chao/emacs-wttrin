@@ -9,6 +9,8 @@ Emacs frontend for weather web service [wttr.in].
 
 ## Usage
 
+### show in a buffer
+
 Set a default cities list for completion:
 
 ```elisp
@@ -27,11 +29,33 @@ When the weather is displayed you can press `q` to quit the buffer or `g` to que
 
 ![screenshot]
 
+
+### show in the mode line
+
+You can also choose to show the weather information in the mode
+line(only works in Emacs 26.1+ for thread support):
+
+```elisp
+(setq wttrin-mode-line-city "Taipei") ;; nil for automatically chosen by wttr.in
+(setq wttrin-mode-line-time-interval 3600) ;; updating interval in seconds 
+(wttrin-display-weather-in-mode-line)
+```
+
+The query will run in a thread silently. You should have fonts that
+supported unicode emojis installed to show the unicode weather
+characters correctly. Consider [Symbola] if you don't have one.
+
+Specify `wttrin-mode-line-format` to change the one-line output format of
+wttr.in, see [wttr.in#one-line-output].
+
+
 ## LICENSE
 
 MIT
 
 [wttr.in]: http://wttr.in/
+[wttr.in#one-line-output]: https://github.com/chubin/wttr.in#one-line-output
+[Symbola]: http://users.teilar.gr/~g1951d/
 [screenshot]: wttrin.png
 [melpa-badge]: http://melpa.org/packages/wttrin-badge.svg
 [melpa-package]: http://melpa.org/#/wttrin

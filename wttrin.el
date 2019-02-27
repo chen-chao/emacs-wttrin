@@ -48,7 +48,7 @@ nil for automatically chosen by wttr.in."
   )
 
 (defcustom wttrin-mode-line-time-interval 3600
-  "Speify the fetching interval of querying weather information."
+  "Speify the updating interval of querying weather information in seconds."
   :group 'wttrin
   :type 'number
   )
