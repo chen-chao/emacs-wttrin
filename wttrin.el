@@ -79,10 +79,12 @@ It should not be set directly, but is instead updated by the
 			 city))
 	 (raw-string (wttrin-fetch-raw-string query-string))
 	 (pos (+ 2 (string-match "^$" raw-string)))  ; get rid of the quotation marks
-	 (msg (substring raw-string pos -2))
-	 )
-    msg)
-)
+	 (msg (substring raw-string pos -2)))
+    (if (string-match "ERROR" msg)
+	"NOT AVAILABLE"
+      msg)
+    )
+  )
 
 (defun wttrin-info-update ()
   (let ((city (or wttrin-mode-line-city ""))
