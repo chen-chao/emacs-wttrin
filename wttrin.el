@@ -41,7 +41,7 @@ nil for automatically chosen by wttr.in."
   :type 'string
   )
 
-(defcustom wttrin-mode-line-format "format=\"%l:+%c %t %w\""
+(defcustom wttrin-mode-line-format "%l:+%c %t %w"
   "Specify default information format for querying wttr.in"
   :group 'wttrin
   :type 'string
@@ -75,10 +75,11 @@ It should not be set directly, but is instead updated by the
   "Fetch the weather information by city name and query format."
   (let* ((city (or city-name ""))
 	 (query-string (if format
-			   (concat city "?" format)
+			   (concat city "?format=\"" format "\"")
 			 city))
 	 (raw-string (wttrin-fetch-raw-string query-string))
-	 (pos (+ 2 (string-match "^$" raw-string)))  ; get rid of the quotation marks
+	 ;; get rid of the header and quotation marks
+	 (pos (+ 2 (string-match "^$" raw-string)))
 	 (msg (substring raw-string pos -2)))
     (if (string-match "ERROR" msg)
 	"NOT AVAILABLE"
