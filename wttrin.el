@@ -81,7 +81,7 @@ It should not be set directly, but is instead updated by the
 	 ;; get rid of the header and quotation marks
 	 (pos (+ 2 (string-match "^$" raw-string)))
 	 (msg (substring raw-string pos -2)))
-    (if (string-match "ERROR" msg)
+    (if (or (string-match "ERROR" msg) (string-match "Unavailable" msg))
 	"NOT AVAILABLE"
       msg)
     )
@@ -100,6 +100,7 @@ It should not be set directly, but is instead updated by the
   )
 
 (defun wttrin-display-weather-in-mode-line ()
+  (interactive)
   (and wttrin-mode-line-timer (cancel-timer wttrin-mode-line-timer))
   (setq wttrin-mode-line-timer nil)
   (setq wttrin-weather-string "")
