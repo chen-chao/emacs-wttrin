@@ -63,13 +63,15 @@ It should not be set directly, but is instead updated by the
 
 (defun wttrin-fetch-raw-string (query)
   "Get the weather information based on your QUERY."
-  (let ((url-request-extra-headers '(("User-Agent" . "curl"))))
+  (let ((url-request-extra-headers '(("User-Agent" . "curl"))) rawstring)
     (add-to-list 'url-request-extra-headers wttrin-default-accept-language)
     (with-current-buffer
-        (url-retrieve-synchronously
-         (concat "http://wttr.in/" query)
-         (lambda (status) (switch-to-buffer (current-buffer))))
-      (decode-coding-string (buffer-string) 'utf-8))))
+	(url-retrieve-synchronously
+	 (concat "http://wttr.in/" query)
+	 (lambda (status) (switch-to-buffer (current-buffer))))
+      (setq rawstring (decode-coding-string (buffer-string) 'utf-8))
+      (kill-buffer (current-buffer)))
+    rawstring))
 
 (defun wttrin-fetch-info (&optional city-name format)
   "Fetch the weather information by city name and query format."
@@ -131,19 +133,19 @@ It should not be set directly, but is instead updated by the
   "Query weather of CITY-NAME via wttrin, and display the result in new buffer."
   (let ((raw-string (wttrin-fetch-raw-string city-name)))
     (if (string-match "ERROR" raw-string)
-        (message "Cannot get weather data. Maybe you inputed a wrong city name?")
+	(message "Cannot get weather data. Maybe you inputed a wrong city name?")
       (let ((buffer (get-buffer-create (format "*wttr.in - %s*" city-name))))
-        (switch-to-buffer buffer)
-        (setq buffer-read-only nil)
-        (erase-buffer)
-        (insert (xterm-color-filter raw-string))
-        (goto-char (point-min))
-        (re-search-forward "^$")
-        (delete-region (point-min) (1+ (point)))
-        (use-local-map (make-sparse-keymap))
-        (local-set-key "q" 'wttrin-exit)
-        (local-set-key "g" 'wttrin)
-        (setq buffer-read-only t)))))
+	(switch-to-buffer buffer)
+	(setq buffer-read-only nil)
+	(erase-buffer)
+	(insert (xterm-color-filter raw-string))
+	(goto-char (point-min))
+	(re-search-forward "^$")
+	(delete-region (point-min) (1+ (point)))
+	(use-local-map (make-sparse-keymap))
+	(local-set-key "q" 'wttrin-exit)
+	(local-set-key "g" 'wttrin)
+	(setq buffer-read-only t)))))
 
 ;;;###autoload
 (defun wttrin (city)
@@ -151,8 +153,8 @@ It should not be set directly, but is instead updated by the
   (interactive
    (list
     (completing-read "City name: " wttrin-default-cities nil nil
-                     (when (= (length wttrin-default-cities) 1)
-                       (car wttrin-default-cities)))))
+		     (when (= (length wttrin-default-cities) 1)
+		       (car wttrin-default-cities)))))
   (wttrin-query city))
 
 (provide 'wttrin)
